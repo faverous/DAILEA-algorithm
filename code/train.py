@@ -20,6 +20,9 @@ from keras.utils.vis_utils import plot_model
 from keras.layers import concatenate, Reshape, Bidirectional, Permute, multiply
 from dailea import train_lstm, LossHistory
 
+start_idx = 70000 #数据集划分标签
+end_idx = 100000 #数据集末尾标签
+
 def transword2id(sentence):
     feature_seg = jieba.lcut(str(sentence), cut_all=False)
     word_id = []
@@ -52,21 +55,21 @@ if __name__ == '__main__':
     feature_data_df['B_attributes'] = feature_data_df['B_attributes'].apply(transword2id)
     feature_data_df['A_describe'] = feature_data_df['A_describe'].apply(transword2id)
     feature_data_df['B_describe'] = feature_data_df['B_describe'].apply(transword2id)
-    arrA_att = feature_data_df.iloc[:70000]['A_attributes'].values
-    arrB_att = feature_data_df.iloc[:70000]['B_attributes'].values
-    arrA_des = feature_data_df.iloc[:70000]['A_describe'].values
-    arrB_des = feature_data_df.iloc[:70000]['B_describe'].values
+    arrA_att = feature_data_df.iloc[:start_idx]['A_attributes'].values
+    arrB_att = feature_data_df.iloc[:start_idx]['B_attributes'].values
+    arrA_des = feature_data_df.iloc[:start_idx]['A_describe'].values
+    arrB_des = feature_data_df.iloc[:start_idx]['B_describe'].values
     arrA_att = sequence.pad_sequences(arrA_att, maxlen=20)
     arrB_att = sequence.pad_sequences(arrB_att, maxlen=20)
     arrA_des = sequence.pad_sequences(arrA_des, maxlen=50)
     arrB_des = sequence.pad_sequences(arrB_des, maxlen=50)
-    arrY = all_data_df.iloc[:70000]['label'].values
+    arrY = all_data_df.iloc[:start_idx]['label'].values
 
-    testA_att = feature_data_df.iloc[70000:100000]['A_attributes'].values
-    testB_att = feature_data_df.iloc[70000:100000]['B_attributes'].values
-    testA_des = feature_data_df.iloc[70000:100000]['A_describe'].values
-    testB_des = feature_data_df.iloc[70000:100000]['B_describe'].values
-    testY = all_data_df.iloc[70000:100000]['label'].values
+    testA_att = feature_data_df.iloc[start_idx:end_idx]['A_attributes'].values
+    testB_att = feature_data_df.iloc[start_idx:end_idx]['B_attributes'].values
+    testA_des = feature_data_df.iloc[start_idx:end_idx]['A_describe'].values
+    testB_des = feature_data_df.iloc[start_idx:end_idx]['B_describe'].values
+    testY = all_data_df.iloc[start_idx:end_idx]['label'].values
     testA_att = sequence.pad_sequences(testA_att, maxlen=20)
     testB_att = sequence.pad_sequences(testB_att, maxlen=20)
     testA_des = sequence.pad_sequences(testA_des, maxlen=50)
